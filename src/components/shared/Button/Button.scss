@@ -1,0 +1,25 @@
+.btn-general {
+    background-color: #05769b;
+    height: 50px;
+    border: none;
+    font-size: 20px;
+    color: #ffffff;
+    min-width: 200px;
+    padding: 0px 20px;
+    border-radius: 30px;
+    text-align: center;
+    cursor: pointer;
+
+    &:disabled {
+        background-color: #bfbfbf;
+        color: #49506c;
+        cursor: default;
+    }
+}
+
+
+@media screen and (max-width: 435px) {
+    .btn-general {
+        width: 100%;
+    }
+}

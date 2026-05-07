@@ -1,0 +1,37 @@
+header {
+    height: 57px;
+    display: flex;
+    align-items: center;
+    padding: 0px 20px;
+    text-align: left;
+    background-color: #05769b;
+    border-bottom: solid 1px #dee2e6;
+    flex: 0;
+    flex-basis: 57px;
+    justify-content: space-between;
+
+    .user-name {
+        text-align: right;
+        font-size: 16px;
+        color: #ffffff;
+
+        a {
+            padding-right: 4px;
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 16px;
+            color: #ebadad;
+            text-decoration: underline;
+
+            &:hover {
+                color: #f38686;
+            }
+        }
+    }
+
+    .project-name {
+        flex: 1;
+        font-size: 18px;
+        color: #ffffff;
+    }
+}
