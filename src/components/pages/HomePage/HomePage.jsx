@@ -38,7 +38,7 @@ const HomePage = (props) => {
                                             return (
                                                 <div className='appointment-item'>
                                                     <div className='time'> {item.displayHaircutTime} </div>
-                                                    <div className='name'> דני לוי </div>
+                                                    <div className='name'> אבי כהן </div>
                                                     <div className='dog-type'> כלב קטן </div>
                                                     <div className='actions'>
                                                         <button type='button' onClick={() => handleOnEdit(item)}>עריכה</button>
