@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import ProviderManager from '../provider/ProviderManager';
-import { setIsLoading, setloginData } from './dogGroomingSlice';
+import { setIsLoading, setIsLoadingAppointmentData, setloginData } from './dogGroomingSlice';
 
 
 export const loginAsync = createAsyncThunk('dogGrooming/login', async (data, thunkAPI) => {
@@ -98,5 +98,89 @@ export const getAppointmentsAsync = createAsyncThunk('dogGrooming/getAppointment
         thunkAPI.dispatch(setIsLoading(false));
     }
 });
+
+
+export const getAppointmentDataAsync = createAsyncThunk('dogGrooming/getAppointmentData', async (data, thunkAPI) => {
+    try {
+        thunkAPI.dispatch(setIsLoadingAppointmentData(true));
+        const state = thunkAPI.getState().dogGrooming;
+
+        const params = {
+            appointmentId: data.appointmentId,
+            haircutDate: data.haircutDate,
+            haircutTypeId: data.haircutTypeId
+        };
+        const res = await ProviderManager.getData('getAppointmentData', params);
+        return res;
+
+    } catch (error) {
+        console.info('error', error);
+    } finally {
+        thunkAPI.dispatch(setIsLoadingAppointmentData(false));
+    }
+});
+
+
+export const addAppointmentAsync = createAsyncThunk('dogGrooming/addAppointment', async (data, thunkAPI) => {
+    try {
+        thunkAPI.dispatch(setIsLoading(true));
+        const state = thunkAPI.getState().dogGrooming;
+
+        const params = {
+            haircutTypeId: data.haircutTypeId,
+            haircutDate: data.haircutDate,
+            selectedSlot: data.selectedSlot
+        };
+        const res = await ProviderManager.getData('addAppointment', params);
+        return res;
+
+    } catch (error) {
+        console.info('error', error);
+    } finally {
+        thunkAPI.dispatch(setIsLoading(false));
+    }
+});
+
+
+export const updateAppointmentAsync = createAsyncThunk('dogGrooming/updateAppointment', async (data, thunkAPI) => {
+    try {
+        thunkAPI.dispatch(setIsLoading(true));
+        const state = thunkAPI.getState().dogGrooming;
+
+        const params = {
+            appointmentId: data.appointmentId,
+            haircutTypeId: data.haircutTypeId,
+            haircutDate: data.haircutDate,
+            selectedSlot: data.selectedSlot
+        };
+        const res = await ProviderManager.getData('updateAppointment', params);
+        return res;
+
+    } catch (error) {
+        console.info('error', error);
+    } finally {
+        thunkAPI.dispatch(setIsLoading(false));
+    }
+});
+
+
+export const deleteAppointmentAsync = createAsyncThunk('dogGrooming/deleteAppointment', async (data, thunkAPI) => {
+    try {
+        thunkAPI.dispatch(setIsLoading(true));
+        const state = thunkAPI.getState().dogGrooming;
+
+        const params = {
+            appointmentId: data.appointmentId
+        };
+        const res = await ProviderManager.getData('deleteAppointment', params);
+        return res;
+
+    } catch (error) {
+        console.info('error', error);
+    } finally {
+        thunkAPI.dispatch(setIsLoading(false));
+    }
+});
+
 
 

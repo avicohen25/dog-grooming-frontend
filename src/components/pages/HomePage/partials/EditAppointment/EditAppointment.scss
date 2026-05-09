@@ -1,0 +1,78 @@
+.edit-appointment-form {
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .form-wrapper {
+        padding-top: 24px;
+
+        .row-wrapper {
+            padding-top: 16px;
+
+            &:first-child {
+                padding-top: 0px;
+            }
+
+            .react-datepicker-wrapper {
+                display: block;
+
+                input[type="text"] {
+                    width: 100%;
+                    height: 44px;
+                    padding: 0px 10px;
+                    font-size: 16px;
+                    direction: rtl;
+                    color: #49506c;
+                    border: solid 1px #84889c;
+                    border-radius: 5px;
+
+                    &:focus,
+                    &:visited {
+                        outline: solid 1px #b9d5ed;
+                    }
+                }
+            }
+        }
+
+        .button-wrapper {
+            padding-top: 20px;
+            text-align: center;
+
+            .btn-general {
+                font-size: 18px;
+            }
+
+            .bottom-link {
+                padding-top: 20px;
+
+                a {
+                    font-size: 16px;
+                    color: #091239;
+                    text-decoration: underline;
+                }
+
+            }
+        }
+
+        .error-message {
+            text-align: right;
+            padding-top: 5px;
+            padding-right: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #ff0000;
+        }
+
+
+        .skeleton-field {
+            height: 44px;
+        }
+
+        .skeleton-btn {
+            width: 200px;
+            height: 44px;
+        }
+    }
+}

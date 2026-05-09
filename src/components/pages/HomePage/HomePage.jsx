@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getAppointmentsAsync } from '../../../store/dogGroomingAsyncThunk';
+import Textbox from '../../shared/Textbox/Textbox';
+import Popup from "../../shared/Popup/Popup";
+import EditAppointment from "./partials/EditAppointment/EditAppointment";
+import { getAppointmentsAsync, getAppointmentDataAsync, deleteAppointmentAsync } from '../../../store/dogGroomingAsyncThunk';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import './HomePage.scss';
 
 const HomePage = (props) => {
+    const userId = useSelector((state) => state.dogGrooming.loginData?.userData?.id);
     const [groupedAppointments, setGroupedAppointments] = useState([]);
+    const [isShowNewPopup, setIsShowNewPopup] = useState(false);
+    const [appointmentId, setAppointmentId] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [dateRange, setDateRange] = useState([null, null]);
+    const [startDate, endDate] = dateRange;
+    const [userName, setUserName] = useState('');
 
     useEffect(() => {
         async function fetchData() {
@@ -22,10 +34,47 @@ const HomePage = (props) => {
 
             <div className='home-page'>
 
+                <div className='appointments-header'>
+
+                    <div className='filter-wrapper'>
+                        <div className='field-wrapper'>
+                            <DatePicker
+                                selectsRange={true}
+                                startDate={startDate}
+                                endDate={endDate}
+                                onChange={(update) => {
+                                    setDateRange(update);
+                                }}
+                                isClearable={true}
+                                placeholderText="בחר טווח תאריכים"
+                                dateFormat="dd/MM/yyyy"
+                                className="date-picker-input"
+                            />
+                        </div>
+                        <div className='field-wrapper'>
+                            <Textbox
+                                value={userName}
+                                error={''}
+                                placeholder={'שם הלקוח'}
+                                id='userName'
+                                name='userName'
+                                type='text'
+                                maxLength='40'
+                                onChange={(e) => setUserName(e.target.value)}
+                            />
+                        </div>
+                        <div className='field-wrapper'>
+                            <button type='button' onClick={handleOnNewAppointment} className='btn-filter'>שלח</button>
+                        </div>
+                    </div>
+
+                    <button type='button' onClick={handleOnNewAppointment} className='btn-new'>ליצירת תור חדש</button>
+                </div>
+
                 {
                     groupedAppointments?.map((group, index) => {
                         return (
-                            <div className='date-wrapper'>
+                            <div key={index} className='date-wrapper'>
                                 <div className='date-header'>
                                     <div className='date'>
                                         {group.date}
@@ -34,15 +83,20 @@ const HomePage = (props) => {
                                 <div className='appointments'>
 
                                     {
-                                        group.appointments?.map((item, index) => {
+                                        group.appointments?.map((item, i) => {
                                             return (
-                                                <div className='appointment-item'>
+                                                <div key={i} className='appointment-item'>
                                                     <div className='time'> {item.displayHaircutTime} </div>
-                                                    <div className='name'> אבי כהן </div>
-                                                    <div className='dog-type'> כלב קטן </div>
+                                                    <div className='name'> {item.firstName + ' ' + item.lastName} </div>
+                                                    <div className='dog-type'> {item.haircutName + ' (' + item.durationMinutes + ' דקות)'} </div>
                                                     <div className='actions'>
-                                                        <button type='button' onClick={() => handleOnEdit(item)}>עריכה</button>
-                                                        <button type='button' onClick={() => handleOnDelete(item)}>ביטול</button>
+                                                        {
+                                                            userId == item.userId &&
+                                                            <>
+                                                                <button type='button' onClick={() => handleOnEdit(item)}>עריכה</button>
+                                                                <button type='button' onClick={() => handleOnDelete(item)}>ביטול</button>
+                                                            </>
+                                                        }
                                                     </div>
                                                 </div>
                                             );
@@ -55,18 +109,48 @@ const HomePage = (props) => {
                     })
                 }
 
+                {
+                    groupedAppointments.length == 0 &&
+                    <div className='no-results'> אין תורים להצגה </div>
+                }
+
             </div>
+
+            <Popup onClose={() => setIsShowNewPopup(false)} isShow={isShowNewPopup} title=''>
+                <EditAppointment appointmentId={appointmentId} onFinish={handleOnEditFinish} />
+            </Popup>
+
 
         </div>
     );
 
-    function handleOnEdit(item) {
-        console.info('handleOnEdit', item);
+    function handleOnNewAppointment() {
+        setIsShowNewPopup(true);
+        const data = { appointmentId: appointmentId };
+        dispatch(getAppointmentDataAsync(data));
     }
 
-    function handleOnDelete(item) {
-        console.info('handleOnDelete', item);
+    async function handleOnEditFinish() {
+        setIsShowNewPopup(false);
+        const res = await dispatch(getAppointmentsAsync());
+        setGroupedAppointments(res.payload?.groupedAppointments);
     }
+
+    function handleOnEdit(item) {
+        setAppointmentId(item.id);
+        setIsShowNewPopup(true);
+        const data = { appointmentId: item.id };
+        dispatch(getAppointmentDataAsync(data));
+    }
+
+    async function handleOnDelete(item) {
+        const res = await dispatch(deleteAppointmentAsync({ appointmentId: item.id }));
+        if (res.payload?.isSuccess) {
+            const result = await dispatch(getAppointmentsAsync());
+            setGroupedAppointments(result.payload?.groupedAppointments);
+        }
+    }
+
 
 };
 

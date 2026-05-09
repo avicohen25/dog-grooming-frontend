@@ -19,6 +19,26 @@ const ProviderMethods = {
         httpMethod: 'get',
         requiredLogin: true,
     },
+    getAppointmentData: {
+        apiName: 'Appointments/GetAppointmentData',
+        httpMethod: 'post',
+        requiredLogin: true,
+    },
+    addAppointment: {
+        apiName: 'Appointments/AddAppointment',
+        httpMethod: 'post',
+        requiredLogin: true,
+    },
+    updateAppointment: {
+        apiName: 'Appointments/UpdateAppointment',
+        httpMethod: 'post',
+        requiredLogin: true,
+    },
+    deleteAppointment: {
+        apiName: 'Appointments/DeleteAppointment',
+        httpMethod: 'post',
+        requiredLogin: true,
+    },
 };
 
 export default ProviderMethods;
