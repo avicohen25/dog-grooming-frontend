@@ -123,6 +123,7 @@ const EditAppointment = (props) => {
 
 
     async function handleChangeDate(date) {
+        date.setHours(12, 0, 0, 0);
         setSelectedDate(date);
 
         const data = {

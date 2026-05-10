@@ -88,7 +88,11 @@ export const getAppointmentsAsync = createAsyncThunk('dogGrooming/getAppointment
         thunkAPI.dispatch(setIsLoading(true));
         const state = thunkAPI.getState().dogGrooming;
 
-        const params = {};
+        const params = {
+            startDate: data?.startDate || null,
+            endDate: data?.endDate || null,
+            userName: data?.userName || ''
+        };
         const res = await ProviderManager.getData('getAppointments', params);
         return res;
 

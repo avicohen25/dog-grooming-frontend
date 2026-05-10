@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Textbox from '../../shared/Textbox/Textbox';
 import Popup from "../../shared/Popup/Popup";
 import EditAppointment from "./partials/EditAppointment/EditAppointment";
+import AppointmentDetails from "./partials/AppointmentDetails/AppointmentDetails";
 import { getAppointmentsAsync, getAppointmentDataAsync, deleteAppointmentAsync } from '../../../store/dogGroomingAsyncThunk';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,6 +14,7 @@ const HomePage = (props) => {
     const userId = useSelector((state) => state.dogGrooming.loginData?.userData?.id);
     const [groupedAppointments, setGroupedAppointments] = useState([]);
     const [isShowNewPopup, setIsShowNewPopup] = useState(false);
+    const [isShowDetailsPopup, setIsShowDetailsPopup] = useState(false);
     const [appointmentId, setAppointmentId] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -23,7 +25,12 @@ const HomePage = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            const res = await dispatch(getAppointmentsAsync());
+            const data = {
+                startDate: startDate,
+                endDate: endDate,
+                userName: userName
+            };
+            const res = await dispatch(getAppointmentsAsync(data));
             setGroupedAppointments(res.payload?.groupedAppointments);
         }
         fetchData();
@@ -64,7 +71,7 @@ const HomePage = (props) => {
                             />
                         </div>
                         <div className='field-wrapper'>
-                            <button type='button' onClick={handleOnNewAppointment} className='btn-filter'>שלח</button>
+                            <button type='button' onClick={handleOnFilter} className='btn-filter'>שלח</button>
                         </div>
                     </div>
 
@@ -95,6 +102,7 @@ const HomePage = (props) => {
                                                             <>
                                                                 <button type='button' onClick={() => handleOnEdit(item)}>עריכה</button>
                                                                 <button type='button' onClick={() => handleOnDelete(item)}>ביטול</button>
+                                                                <button type='button' onClick={() => handleOnShowDetails(item)}>פרטים</button>
                                                             </>
                                                         }
                                                     </div>
@@ -120,19 +128,38 @@ const HomePage = (props) => {
                 <EditAppointment appointmentId={appointmentId} onFinish={handleOnEditFinish} />
             </Popup>
 
+            <Popup onClose={() => setIsShowDetailsPopup(false)} isShow={isShowDetailsPopup} title=''>
+                <AppointmentDetails appointmentId={appointmentId} />
+            </Popup>
+
 
         </div>
     );
 
+    async function handleOnFilter() {
+        const data = {
+            startDate: startDate,
+            endDate: endDate,
+            userName: userName
+        };
+        const res = await dispatch(getAppointmentsAsync(data));
+        setGroupedAppointments(res.payload?.groupedAppointments);
+    }
+
     function handleOnNewAppointment() {
         setIsShowNewPopup(true);
-        const data = { appointmentId: appointmentId };
+        const data = { appointmentId: 0 };
         dispatch(getAppointmentDataAsync(data));
     }
 
     async function handleOnEditFinish() {
         setIsShowNewPopup(false);
-        const res = await dispatch(getAppointmentsAsync());
+        const data = {
+            startDate: startDate,
+            endDate: endDate,
+            userName: userName
+        };
+        const res = await dispatch(getAppointmentsAsync(data));
         setGroupedAppointments(res.payload?.groupedAppointments);
     }
 
@@ -143,11 +170,23 @@ const HomePage = (props) => {
         dispatch(getAppointmentDataAsync(data));
     }
 
+    function handleOnShowDetails(item) {
+        setAppointmentId(item.id);
+        setIsShowDetailsPopup(true);
+        const data = { appointmentId: item.id };
+        dispatch(getAppointmentDataAsync(data));
+    }
+
     async function handleOnDelete(item) {
-        const res = await dispatch(deleteAppointmentAsync({ appointmentId: item.id }));
-        if (res.payload?.isSuccess) {
-            const result = await dispatch(getAppointmentsAsync());
-            setGroupedAppointments(result.payload?.groupedAppointments);
+        const result = await dispatch(deleteAppointmentAsync({ appointmentId: item.id }));
+        if (result.payload?.isSuccess) {
+            const data = {
+                startDate: startDate,
+                endDate: endDate,
+                userName: userName
+            };
+            const res = await dispatch(getAppointmentsAsync(data));
+            setGroupedAppointments(res.payload?.groupedAppointments);
         }
     }
 

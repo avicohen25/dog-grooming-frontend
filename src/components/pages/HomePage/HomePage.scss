@@ -40,6 +40,7 @@
                     background-color: #faebd7;
                     border: solid 1px #84889c;
                     border-radius: 5px;
+                    cursor: pointer;
                 }
             }
 
@@ -48,8 +49,10 @@
                 width: 110px;
                 font-size: 14px;
                 background-color: #05769b;
-                border: solid 1px #ffffff;
+                border: solid 1px #84889c;
                 border-radius: 5px;
+                cursor: pointer;
+                color: #ffffff;
             }
         }
 
@@ -124,8 +127,11 @@
 
                     .actions {
                         flex: 0;
-                        flex-basis: 100px;
+                        flex-basis: 160px;
                         margin-right: auto;
+                        display: flex;
+                        gap: 5px;
+                        justify-content: end;
                     }
                 }
             }
@@ -135,6 +141,7 @@
             text-align: center;
             font-size: 16px;
             font-weight: bold;
+            padding-top: 20px;
         }
     }
 }

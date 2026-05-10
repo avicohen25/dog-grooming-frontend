@@ -16,7 +16,7 @@ const ProviderMethods = {
     },
     getAppointments: {
         apiName: 'Appointments/GetAppointments',
-        httpMethod: 'get',
+        httpMethod: 'post',
         requiredLogin: true,
     },
     getAppointmentData: {
